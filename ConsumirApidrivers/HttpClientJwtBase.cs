@@ -1,37 +1,35 @@
 ﻿using Newtonsoft.Json;
-//inicio el namespace
-using AM.Integration.Clients.Core.RestClient.JwtService;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading.Tasks;
 
-//nombre del namespace
-namespace AM.Integration.Clients.Core.RestClient
+namespace ConsumirApidrivers
 {
-
-    //clase base de otras clases
     public abstract class HttpClientJwtBase<t, TResult>
     {
-        //TResult operacion que retorna un valor
         public TResult token;
-
-        // variable de solo lectura
         private readonly TokenJwtBase<t> tokenData;
-
         public HttpClientJwtBase(TokenJwtBase<t> tokenData, TResult tokenResult)
         {
             this.tokenData = tokenData;
             this.token = tokenResult;
 
         }
-        public async void JsonPost<TResult>(Uri uri, String token, dynamic @params, Action<TResult, Exception> callback)
+        public async void JsonPost<TResult>(Uri uri, String token, String @params, Action<TResult, Exception> callback)
         {
             using (var client = new HttpClient())
             {
 
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var content = new StringContent(JsonConvert.SerializeObject(@params), UTF8Encoding.Default, "application/json");
+                client.DefaultRequestHeaders.Add("token", token);
+                var encoding = System.Text.Encoding.GetEncoding("UTF-8");
+                var content = new StringContent(@params, encoding, "application/json");
 
                 await client.PostAsync(uri, content).ContinueWith((task) =>
                 {
@@ -40,14 +38,15 @@ namespace AM.Integration.Clients.Core.RestClient
             }
         }
 
-        public async void JsonPut<TResult>(Uri uri, String token, dynamic @params, Action<TResult, Exception> callback)
+        public async void JsonPut<TResult>(Uri uri, String token, String @params, Action<TResult, Exception> callback)
         {
             using (var client = new HttpClient())
             {
 
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var content = new StringContent(JsonConvert.SerializeObject(@params), UTF8Encoding.Default, "application/json");
+                client.DefaultRequestHeaders.Add("token", token);
+                var encoding = System.Text.Encoding.GetEncoding("UTF-8");
+                var content = new StringContent(@params, encoding, "application/json");
 
                 await client.PostAsync(uri, content).ContinueWith((task) =>
                 {
@@ -76,7 +75,7 @@ namespace AM.Integration.Clients.Core.RestClient
             }
         }
 
-        public async void getToken(Action<String, Exception> callback)
+        public async void getToken(Action<TResult, Exception> callback)
         {
             using (var client = new HttpClient())
             {
@@ -117,6 +116,7 @@ namespace AM.Integration.Clients.Core.RestClient
                 {
                     var resultTask = task.Result.Content.ReadAsStringAsync();
                     resultTask.Wait();
+
 
                     var result = JsonConvert.DeserializeObject<TResult>(resultTask.Result);
                     callback(arg1: result, arg2: null);

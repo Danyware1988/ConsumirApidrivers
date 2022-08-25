@@ -1,7 +1,11 @@
 ﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-
-namespace AM.Integration.Clients.Core.RestClient.JwtService
+namespace ConsumirApidrivers
 {
     public class TokenJwtBase<t>
     {
