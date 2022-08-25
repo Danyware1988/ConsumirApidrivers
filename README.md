@@ -1,2 +1,2 @@
 # ConsumirApidrivers
-Consumo por JWT token, hacer get y post a un endpoints, drivers, solicitud de cita.
+Consumo por JWT token, get y post a endpoints, drivers, solicitud de cita.
