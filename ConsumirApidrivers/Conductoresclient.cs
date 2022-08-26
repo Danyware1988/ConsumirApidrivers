@@ -1,5 +1,6 @@
 ﻿using Consumir;
 using ConsumirApidrivers;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,15 +30,29 @@ namespace ConsumirApidrivers
             }
 
             this.token = arg1;
-
+            //ASD
             //to do: logica/instancia que cree un objeto conductor
+            Driver driver = new Driver()
+            {
+                id = "1128061906",
+                ID_type = "CC",
+                first_name = "Dany",
+                second_name = "Daniel",
+                surname = "Vargas",
+                second_surname = "Urieles",
+                ID_transport = "123"
+               
 
 
-            //http://k8s-default-apisvc-0554af7ff0-49d70c805666de9b.elb.us-east-2.amazonaws.com:4000/drivers
-            //this.JsonPost<dynamic>(uri: new Uri(this.request.EndPoint), @params: this.request.Body, token: this.token.Token, callback: excecuteCallback);
+            };
+
+            //creando json string o body de peticion, convierto la instacia
+            var jsonconductor = JsonConvert.SerializeObject(driver);
+            
+            this.JsonPost<dynamic>(uri: new Uri("https://d07d-181-139-121-211.ngrok.io/drivers"), @params: jsonconductor, token: this.token.Token, callback: excecuteCallback);
             //parms objeto conducdor
-
-            //{"id":"1144475553","ID_type":"CC","first_name":"Julian","second_name":"Andres","surname":"Perez","second_surname":"Alcala","ID_transport":""}
+            //ASD
+            
 
         }
         private void excecuteCallback(dynamic data, Exception ex)
